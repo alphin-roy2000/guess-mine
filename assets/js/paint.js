@@ -33,9 +33,14 @@ const beganPath = (x, y) => {
   ctx.beginPath();
   ctx.moveTo(x, y);
 };
-const strokedPath = (x, y) => {
+const strokedPath = (x, y, color = null) => {
+  let currentColor = ctx.strokeStyle;
+  if (color !== null) {
+    ctx.strokeStyle = color;
+  }
   ctx.lineTo(x, y);
   ctx.stroke();
+  ctx.strokeStyle = currentColor;
 };
 function onMouseMove(event) {
   const x = event.offsetX;
@@ -49,7 +54,11 @@ function onMouseMove(event) {
     // ctx.lineTo(x, y);
     // ctx.stroke();
     strokedPath(x, y);
-    getSocket().emit(window.events.strokePath, { x, y });
+    getSocket().emit(window.events.strokePath, {
+      x,
+      y,
+      color: ctx.strokeStyle,
+    });
   }
 }
 
@@ -73,10 +82,18 @@ function handleModeClick() {
     mode.innerText = "Paint";
   }
 }
-
+const fill = (color) => {
+  let currentColor = ctx.fillStyle;
+  if (color !== null) {
+    ctx.fillStyle = color;
+  }
+  ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+  ctx.fillStyle = currentColor;
+};
 function handleCanvasClick() {
   if (filling) {
-    ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+    fill();
+    getSocket().emit(window.events.fill, { color: ctx.fillStyle });
   }
 }
 
@@ -93,12 +110,22 @@ function handleSaveClick() {
 }
 
 if (canvas) {
-  canvas.addEventListener("mousemove", onMouseMove);
-  canvas.addEventListener("mousedown", startPainting);
-  canvas.addEventListener("mouseup", stopPainting);
-  canvas.addEventListener("mouseleave", stopPainting);
-  canvas.addEventListener("click", handleCanvasClick);
-  canvas.addEventListener("contextmenu", handleCM);
+  if (
+    !/Android|webOS|iPhone|iPad|iPod|Moto|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent
+    )
+  ) {
+    canvas.addEventListener("mousemove", onMouseMove);
+    canvas.addEventListener("mousedown", startPainting);
+    canvas.addEventListener("mouseup", stopPainting);
+    canvas.addEventListener("mouseleave", stopPainting);
+    canvas.addEventListener("click", handleCanvasClick);
+    canvas.addEventListener("contextmenu", handleCM);
+  } else {
+    canvas.addEventListener("touchstart", startPainting);
+    canvas.addEventListener("touchmove", onMouseMove);
+    canvas.addEventListener("touchend", stopPainting);
+  }
 }
 
 Array.from(colors).forEach((color) =>
@@ -118,4 +145,5 @@ if (saveBtn) {
 }
 
 export const handleBeganPath = ({ x, y }) => beganPath(x, y);
-export const handleStrokedPath = ({ x, y }) => strokedPath(x, y);
+export const handleStrokedPath = ({ x, y, color }) => strokedPath(x, y, color);
+export const handleFilled = ({ color }) => fill(color);
