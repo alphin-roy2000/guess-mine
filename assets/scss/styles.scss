@@ -1,25 +1,11 @@
-// $color:red;
-// @import "body";
-// @keyframes sexy{
-//     from{
-//         color:red;
-//     }
-//     to{
-//         color:blue;
-//     }
-// }
-// body{
-//     // background-color:$color;
-//     position: sticky;
-// }
 @import url("https://fonts.googleapis.com/css?family=Lato:400,700");
-@import "_variables";
-@import "_reset";
+@import "variables";
+@import "reset";
+@import "login";
 @import "notifications";
-@import "loginBox";
 @import "chat";
-
-// @import "gameContainer";
+@import "game";
+@import "board";
 
 * {
   box-sizing: border-box;
@@ -40,7 +26,6 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-
   min-height: 100%;
   .loginBox,
   .gameContainer {
@@ -51,7 +36,9 @@ body {
       display: block;
     }
   }
-  &.loggedIn .gameContainer {
-    display: block;
+  &.loggedIn {
+    .gameContainer {
+      display: flex;
+    }
   }
 }
