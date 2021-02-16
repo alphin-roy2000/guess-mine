@@ -15,8 +15,10 @@
 @import url("https://fonts.googleapis.com/css?family=Lato:400,700");
 @import "_variables";
 @import "_reset";
-// @import "notifications";
-// @import "loginBox";
+@import "notifications";
+@import "loginBox";
+@import "chat";
+
 // @import "gameContainer";
 
 * {
@@ -38,6 +40,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+
   min-height: 100%;
   .loginBox,
   .gameContainer {

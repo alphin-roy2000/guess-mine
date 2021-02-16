@@ -8,8 +8,16 @@ html(lang="en")
         title Guess Mine
     body
          .loginBox#jsLogin 
-            input(placeholder="What's ur nickname")
+            form
+               input(placeholder="What's ur nickname")
          .gameContainer#jsGame
-            h1 You are logged in
+            .chat
+               ul.chat__messages#jsMessages
+               form.chat__form#jsSendMsg
+                  input(placeholder="Write a message",type="text")
+            //- h1 You are logged in
+            //- #jsNotifications 
+         script.
+            window.events=!{events}
          script(src="/socket.io/socket.io.js") 
          script(src="/js/main.js") 
